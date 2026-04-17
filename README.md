@@ -1,134 +1,100 @@
 # TaskChain System
 
-TaskChain System is a production task management application built with Django.
+TaskChain is a Django-based production task management system with a blockchain-inspired audit trail.
 
-The main idea of the project is to manage task flow across multiple workstations and additionally record important task events using a blockchain-inspired audit trail. The system is designed for manufacturing environments where tasks move through different stages such as CNC, welding, painting, and quality control.
+---
 
-## Main idea
+## 🖥️ System Preview
 
-The system allows users to:
+### Home page
 
-- create production task chains across multiple workstations
-- manage task execution flow
-- restrict access based on user roles
-- store important events as linked blocks
-- verify whether the block chain history has been modified
+![Home](assets/home.jpg)
 
-## Core features
+### Dashboard
 
-### 1. Task management
-- tasks are created under a specific project
-- tasks are assigned to specific machines or workstations
-- one part can have multiple production stages
+![Dashboard](assets/dashboard.jpg)
 
-### 2. Task sequence and dependencies
-- tasks are linked through `depends_on`
-- the next task becomes available only when the previous one is completed
-- this helps enforce the correct production flow
+### Machine tasks (workflow)
 
-### 3. User roles
-The system supports different user roles:
+![Machine](assets/machine.jpg)
 
-- **manager** – can view the dashboard and create tasks
-- **operator** – can only view tasks assigned to their own workstation
-- **superuser** – full system access
+### Create task chain
 
-### 4. Blockchain-inspired audit trail
-Each important event in the system is saved as a block, for example:
+![Create](assets/create.jpg)
 
-- `TASK_CREATED`
-- `TASK_STATUS_CHANGED`
-- `TASK_PRIORITY_CHANGED`
-- `TASK_MACHINE_CHANGED`
-- `TASK_REORDERED`
+---
+
+## Core Features
+
+* Task management across multiple workstations
+* Task dependency workflow (`depends_on`)
+* Role-based access (manager / operator / admin)
+* Blockchain-like event logging (hash + prev_hash)
+* Chain integrity verification
+
+---
+
+## How it works
+
+* Tasks are created under a project
+* Assigned to machines (workstations)
+* Executed in sequence
+* Each action is recorded as a block
+* Chain integrity can be verified
+
+---
+
+## Blockchain logic
+
+Each important event is stored as a block:
+
+* `TASK_CREATED`
+* `TASK_STATUS_CHANGED`
+* `TASK_PRIORITY_CHANGED`
+* `TASK_MACHINE_CHANGED`
+* `TASK_REORDERED`
 
 Each block contains:
-- its own `hash`
-- previous block `prev_hash`
 
-This makes it possible to detect history tampering and maintain data integrity.
+* `hash`
+* `prev_hash`
 
-### 5. Chain verification
-The system includes a `verify_chain` function that:
+This ensures:
 
-- recalculates each block hash
-- checks whether hashes match
-- checks whether the chain is continuous
+* data integrity
+* tamper detection
 
-## Example production workflow
+---
 
-System configuration (machines and projects) is managed through the Django admin panel.
+## Technologies
 
-- Machines are created and maintained by the administrator
-- Projects are also created in the admin panel
+* Python
+* Django
+* SQLite
+* HTML / CSS
 
-Machines represent abstract workstations and are not limited to specific types.  
-They can reflect any real production environment.
+---
 
-A single task can move through multiple stages defined by the manager.
+## Run project
 
-Each stage is represented as a separate task assigned to a machine.
-
-Tasks are created by a manager and linked together into a sequence.  
-Tasks can depend on one another, which means later stages cannot start before earlier stages are completed.
-
-## Technologies used
-
-- Python
-- Django
-- SQLite
-- HTML
-- CSS
-
-## Project structure
-
-- `tasks` – task logic, machines, dashboard, production workflow
-- `ledger` – blocks, hash calculation, chain verification
-- `accounts` – user profiles and roles
-- `config` – project settings and URL configuration
-
-## Why this project is different
-
-This is not just a simple CRUD task application.
-
-The system combines:
-
-- role-based production task management
-- workstation-specific task queues
-- dependency-based workflow
-- blockchain-inspired event logging
-- linked hash verification for auditability
-
-This makes the project closer to a lightweight MES-style production management system.
-
-## How to run the project
-
-# 1. Clone repository
+```bash
 git clone https://github.com/asavalenkovas/taskchain-system.git
 cd taskchain-system
 
-# 2. Create virtual environment
 python -m venv venv
-
-# 3. Activate virtual environment
-
-# Windows
 venv\Scripts\activate
 
-# Linux / macOS
-source venv/bin/activate
-
-# 4. Install dependencies
-pip install -r requirements.txt
-
-# 5. Apply migrations
+pip install django
 python manage.py migrate
-
-# 6. Create superuser
 python manage.py createsuperuser
-
-# 7. Run server
 python manage.py runserver
+```
 
-# 8. Open in browser
+Open:
 http://127.0.0.1:8000/
+
+---
+
+## About
+
+This project demonstrates how production workflows can be combined with a blockchain-inspired audit system to ensure transparency and data integrity.
