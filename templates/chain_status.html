@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if lang == "lt" %}Grandinės tikrinimas{% else %}Chain verification{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                {% if lang == "lt" %}
+                    <h1 class="page-title">Grandinės tikrinimas</h1>
+                    <p class="muted">Čia matomas blokinės istorijos vientisumo rezultatas.</p>
+                {% else %}
+                    <h1 class="page-title">Chain verification</h1>
+                    <p class="muted">Blockchain integrity validation result is shown here.</p>
+                {% endif %}
+            </div>
+
+            <div class="nav">
+                <a class="nav-link nav-link-secondary" href="{% url 'home' %}">
+                    {% if lang == "lt" %}← Pagrindinis{% else %}← Home{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'block_list' %}">
+                    {% if lang == "lt" %}Blokų sąrašas{% else %}Block list{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <p class="status-row">
+                <strong>{% if lang == "lt" %}Būsena{% else %}Status{% endif %}:</strong>
+                {% if is_valid %}
+                    <span class="status-ok">{% if lang == "lt" %}Teisinga{% else %}Valid{% endif %}</span>
+                {% else %}
+                    <span class="status-error">{% if lang == "lt" %}Klaida{% else %}Error{% endif %}</span>
+                {% endif %}
+            </p>
+
+            <div class="message-box">
+                <strong>{% if lang == "lt" %}Pranešimas{% else %}Message{% endif %}:</strong> {{ message }}
+            </div>
+
+            <div class="actions spacer-top">
+                <a class="btn" href="{% url 'block_list' %}">
+                    {% if lang == "lt" %}← Grįžti į blokų sąrašą{% else %}← Back to block list{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                {% if lang == "lt" %}
+                    <h1 class="page-title">Gamybos dashboard</h1>
+                    <p class="muted">Bendra aktyvių darbo vietų ir užduočių statistika.</p>
+                {% else %}
+                    <h1 class="page-title">Production dashboard</h1>
+                    <p class="muted">Overview of machines and task statistics.</p>
+                {% endif %}
+            </div>
+
+            <div class="nav-group">
+                <a class="nav-link nav-link-secondary" href="{% url 'home' %}">
+                    {% if lang == "lt" %}Pagrindinis{% else %}Home{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+
+                {% if user.is_authenticated %}
+                    <form class="inline-form" action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-secondary" type="submit">
+                            {% if lang == "lt" %}Atsijungti{% else %}Logout{% endif %}
+                        </button>
+                    </form>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">
+                        {% if lang == "lt" %}Prisijungti{% else %}Login{% endif %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="actions">
+            <a class="btn" href="{% url 'create_task' %}">
+                {% if lang == "lt" %}+ Kurti naują užduotį{% else %}+ Create task{% endif %}
+            </a>
+        </div>
+
+        <div class="card spacer-top">
+            <div class="table-wrapper">
+                <table class="table">
+                    <tr>
+                        <th>{% if lang == "lt" %}Darbo vieta{% else %}Machine{% endif %}</th>
+                        <th>{% if lang == "lt" %}Viso užduočių{% else %}Total{% endif %}</th>
+                        <th>{% if lang == "lt" %}Laukia{% else %}Pending{% endif %}</th>
+                        <th>{% if lang == "lt" %}Vykdoma{% else %}In progress{% endif %}</th>
+                        <th>{% if lang == "lt" %}Užbaigta{% else %}Completed{% endif %}</th>
+                        <th>{% if lang == "lt" %}Vėluoja{% else %}Overdue{% endif %}</th>
+                        <th>{% if lang == "lt" %}Veiksmas{% else %}Action{% endif %}</th>
+                    </tr>
+
+                    {% for item in machine_data %}
+                        <tr>
+                            <td>{{ item.machine.code }}, {{ item.machine.name }}</td>
+                            <td>{{ item.total_count }}</td>
+                            <td>{{ item.pending_count }}</td>
+                            <td>{{ item.in_progress_count }}</td>
+                            <td>{{ item.completed_count }}</td>
+                            <td>{{ item.overdue_count }}</td>
+                            <td>
+                                <a class="btn" href="{% url 'machine_tasks' item.machine.id %}">
+                                    {% if lang == "lt" %}Atidaryti{% else %}Open{% endif %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td class="table-empty" colspan="7">
+                                {% if lang == "lt" %}
+                                    Aktyvių užduočių nėra.
+                                {% else %}
+                                    No active tasks.
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

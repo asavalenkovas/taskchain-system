@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if lang == "lt" %}Prisijungimas{% else %}Login{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="auth-page">
+    <div class="container-narrow">
+        <div class="content-box">
+
+            <h1 class="section-title center-text">
+                {% if lang == "lt" %}Prisijungimas{% else %}Login{% endif %}
+            </h1>
+
+            {% if form.errors %}
+                <p class="auth-error">
+                    {% if lang == "lt" %}
+                        Neteisingas vartotojo vardas arba slaptažodis.
+                    {% else %}
+                        Invalid username or password.
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            <div class="nav" style="margin-bottom:15px;">
+                <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <label class="form-label" for="id_username">
+                        {% if lang == "lt" %}Vartotojo vardas{% else %}Username{% endif %}
+                    </label>
+                    <input type="text" name="username" id="id_username" required>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="id_password">
+                        {% if lang == "lt" %}Slaptažodis{% else %}Password{% endif %}
+                    </label>
+                    <input type="password" name="password" id="id_password" required>
+                </div>
+
+                <button type="submit" class="btn btn-full">
+                    {% if lang == "lt" %}Prisijungti{% else %}Login{% endif %}
+                </button>
+            </form>
+
+            <p class="muted center-text spacer-top">
+                {% if lang == "lt" %}
+                    Pamiršote slaptažodį? Kreipkitės į administratorių.
+                {% else %}
+                    Forgot password? Contact administrator.
+                {% endif %}
+            </p>
+
+            <p class="center-text spacer-top">
+                <a href="{% url 'home' %}">
+                    {% if lang == "lt" %}← Grįžti į pagrindinį{% else %}← Back to home{% endif %}
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

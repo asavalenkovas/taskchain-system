@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if lang == "lt" %}Kurti užduočių seką{% else %}Create task chain{% endif %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                {% if lang == "lt" %}
+                    <h1 class="page-title">Kurti užduočių seką</h1>
+                    <p class="muted">Sukuriama viena užduoties seka per kelias darbo vietas.</p>
+                {% else %}
+                    <h1 class="page-title">Create task chain</h1>
+                    <p class="muted">Create one task flow across multiple workstations.</p>
+                {% endif %}
+            </div>
+
+            <div class="nav">
+                <a class="nav-link nav-link-secondary" href="{% url 'home' %}">
+                    {% if lang == "lt" %}Pagrindinis{% else %}Home{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'block_list' %}">
+                    {% if lang == "lt" %}Blokai{% else %}Blocks{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+
+                <form class="inline-form" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-secondary" type="submit">
+                        {% if lang == "lt" %}Atsijungti{% else %}Logout{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <p>
+                {% if lang == "lt" %}
+                    Čia sukuriama užduotis ir nurodoma, per kokias darbo vietas ji bus vykdoma.
+                    Sistema automatiškai sukuria kelias susietas užduotis pagal pasirinktą seką.
+                {% else %}
+                    Here you create a task and define through which workstations it will be processed.
+                    The system automatically creates multiple linked tasks based on the selected sequence.
+                {% endif %}
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Projektas{% else %}Project{% endif %}
+                    </label>
+                    {{ form.project }}
+                    {{ form.project.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Pavadinimas{% else %}Name{% endif %}
+                    </label>
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Aprašymas{% else %}Description{% endif %}
+                    </label>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Detalės kodas{% else %}Part code{% endif %}
+                    </label>
+                    {{ form.part_code }}
+                    {{ form.part_code.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Kiekis{% else %}Quantity{% endif %}
+                    </label>
+                    {{ form.quantity }}
+                    {{ form.quantity.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Terminas{% else %}Due date{% endif %}
+                    </label>
+                    {{ form.due_date }}
+                    {{ form.due_date.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}Prioritetas{% else %}Priority{% endif %}
+                    </label>
+                    {{ form.priority }}
+                    {{ form.priority.errors }}
+                </div>
+
+                {% if lang == "lt" %}
+                    <h2 class="section-title">Darbo vietų seka</h2>
+                {% else %}
+                    <h2 class="section-title">Workstation sequence</h2>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}1 darbo vieta{% else %}Machine 1{% endif %}
+                    </label>
+                    {{ form.machine_1 }}
+                    {{ form.machine_1.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}2 darbo vieta{% else %}Machine 2{% endif %}
+                    </label>
+                    {{ form.machine_2 }}
+                    {{ form.machine_2.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}3 darbo vieta{% else %}Machine 3{% endif %}
+                    </label>
+                    {{ form.machine_3 }}
+                    {{ form.machine_3.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {% if lang == "lt" %}4 darbo vieta{% else %}Machine 4{% endif %}
+                    </label>
+                    {{ form.machine_4 }}
+                    {{ form.machine_4.errors }}
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn" type="submit">
+                        {% if lang == "lt" %}Išsaugoti seką{% else %}Save sequence{% endif %}
+                    </button>
+                    <a class="btn btn-light" href="{% url 'dashboard' %}">
+                        {% if lang == "lt" %}Atgal{% else %}Back{% endif %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskChain</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="container">
+
+        {% if user.is_authenticated %}
+            {% with profile=user.employeeprofile %}
+                <div class="page-header">
+                    <div>
+                        <h1 class="brand-title">TaskChain</h1>
+
+                        {% if lang == "lt" %}
+                            <p class="muted">Užduočių ir įvykių grandinės sistema</p>
+                        {% else %}
+                            <p class="muted">Task and event chain system</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="nav">
+                        {% if user.is_superuser %}
+                            <a class="nav-link nav-link-secondary" href="/admin/">Admin</a>
+                        {% endif %}
+
+                        <a class="nav-link" href="{% url 'block_list' %}">
+                            {% if lang == "lt" %}Blokai{% else %}Blocks{% endif %}
+                        </a>
+
+                        <a class="nav-link" href="{% url 'chain_status' %}">
+                            {% if lang == "lt" %}Grandinės tikrinimas{% else %}Chain verify{% endif %}
+                        </a>
+
+                        <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                        <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+
+                        {% if user.is_superuser or profile.role == "manager" %}
+                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                        {% elif profile.role == "operator" and profile.machine %}
+                            <a class="nav-link" href="{% url 'machine_tasks' profile.machine.id %}">
+                                {% if lang == "lt" %}Mano darbo vieta{% else %}My workstation{% endif %}
+                            </a>
+                        {% endif %}
+
+                        <form class="inline-form" action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-secondary" type="submit">
+                                {% if lang == "lt" %}Atsijungti{% else %}Logout{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card hero">
+                    <div class="hero-text">
+
+                        {% if lang == "lt" %}
+                            <h2 class="page-title">Užduočių valdymo sistema su įvykių grandine</h2>
+                            <p>
+                                TaskChain yra sistema, kurioje užduočių kūrimas ir statuso pakeitimai
+                                įrašomi į susietų blokų grandinę. Taip galima matyti ne tik dabartinę
+                                užduoties būseną, bet ir visą jos istoriją.
+                            </p>
+                        {% else %}
+                            <h2 class="page-title">Task management system with event chain</h2>
+                            <p>
+                                TaskChain is a system where task creation and status changes
+                                are recorded in a linked block chain. This allows tracking
+                                not only the current state but also full history.
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="actions">
+                        {% if user.is_superuser or profile.role == "manager" %}
+                            <a class="btn" href="{% url 'dashboard' %}">
+                                {% if lang == "lt" %}Atidaryti dashboard{% else %}Open dashboard{% endif %}
+                            </a>
+                        {% elif profile.role == "operator" and profile.machine %}
+                            <a class="btn" href="{% url 'machine_tasks' profile.machine.id %}">
+                                {% if lang == "lt" %}Atidaryti mano darbo vietą{% else %}Open my workstation{% endif %}
+                            </a>
+                        {% endif %}
+
+                        <a class="btn btn-light" href="{% url 'block_list' %}">
+                            {% if lang == "lt" %}Atidaryti blokus{% else %}Open blocks{% endif %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            {% if lang == "lt" %}Ką sistema daro{% else %}System features{% endif %}
+                        </h3>
+
+                        <table class="feature-table">
+                            <tr>
+                                <th>{% if lang == "lt" %}Funkcija{% else %}Feature{% endif %}</th>
+                                <th>{% if lang == "lt" %}Aprašymas{% else %}Description{% endif %}</th>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == "lt" %}Užduoties sukūrimas{% else %}Task creation{% endif %}</td>
+                                <td>{% if lang == "lt" %}Sukūrus užduotį sukuriamas naujas blokas{% else %}Creates new blockchain entry{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == "lt" %}Statuso pakeitimas{% else %}Status update{% endif %}</td>
+                                <td>{% if lang == "lt" %}Pakeitus statusą sukuriamas papildomas blokas{% else %}Adds new block on change{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == "lt" %}Darbo vietos{% else %}Machines{% endif %}</td>
+                                <td>{% if lang == "lt" %}Užduotys priskiriamos darbo vietoms{% else %}Tasks assigned to machines{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == "lt" %}Priklausomybės{% else %}Dependencies{% endif %}</td>
+                                <td>{% if lang == "lt" %}Užduotys gali priklausyti viena nuo kitos{% else %}Tasks depend on each other{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% if lang == "lt" %}Grandinės tikrinimas{% else %}Chain verification{% endif %}</td>
+                                <td>{% if lang == "lt" %}Galima tikrinti duomenų vientisumą{% else %}Integrity verification{% endif %}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            {% if lang == "lt" %}Sistemos logika{% else %}System logic{% endif %}
+                        </h3>
+
+                        <ol class="logic-list">
+                            {% if lang == "lt" %}
+                                <li>Sukuriamos užduotys</li>
+                                <li>Priskiriamos darbo vietoms</li>
+                                <li>Vykdomos pagal eilę</li>
+                                <li>Veiksmai įrašomi į blokų grandinę</li>
+                                <li>Grandinė gali būti patikrinta</li>
+                            {% else %}
+                                <li>Tasks are created</li>
+                                <li>Assigned to machines</li>
+                                <li>Executed in order</li>
+                                <li>Logged in blockchain</li>
+                                <li>Chain can be verified</li>
+                            {% endif %}
+                        </ol>
+                    </div>
+                </div>
+            {% endwith %}
+
+        {% else %}
+            <div class="page-header">
+                <div>
+                    <h1 class="brand-title">TaskChain</h1>
+
+                    {% if lang == "lt" %}
+                        <p class="muted">Užduočių ir įvykių grandinės sistema</p>
+                    {% else %}
+                        <p class="muted">Task and event chain system</p>
+                    {% endif %}
+                </div>
+
+                <div class="nav">
+                    <a class="nav-link" href="{% url 'block_list' %}">
+                        {% if lang == "lt" %}Blokai{% else %}Blocks{% endif %}
+                    </a>
+
+                    <a class="nav-link" href="{% url 'chain_status' %}">
+                        {% if lang == "lt" %}Grandinės tikrinimas{% else %}Chain verify{% endif %}
+                    </a>
+
+                    <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                    <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+
+                    <a class="nav-link nav-link-secondary" href="{% url 'login' %}">
+                        {% if lang == "lt" %}Prisijungti{% else %}Login{% endif %}
+                    </a>
+                </div>
+            </div>
+
+            <div class="card hero">
+                <div class="hero-text">
+                    {% if lang == "lt" %}
+                        <h2 class="page-title">Užduočių valdymo sistema su įvykių grandine</h2>
+                        <p>Sistema leidžia valdyti užduotis ir registruoti veiksmus blockchain.</p>
+                    {% else %}
+                        <h2 class="page-title">Task management system with event chain</h2>
+                        <p>System allows managing tasks and logging actions in blockchain.</p>
+                    {% endif %}
+                </div>
+
+                <div class="actions">
+                    <a class="btn" href="{% url 'login' %}">
+                        {% if lang == "lt" %}Prisijungti{% else %}Login{% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+</body>
+</html>

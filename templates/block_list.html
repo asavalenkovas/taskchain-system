@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if lang == "lt" %}Blokų sąrašas{% else %}Block list{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                {% if lang == "lt" %}
+                    <h1 class="page-title">Blokų sąrašas</h1>
+                    <p class="muted">Čia rodomi paskutiniai užduočių istorijos blokai.</p>
+                {% else %}
+                    <h1 class="page-title">Block list</h1>
+                    <p class="muted">Latest task history blocks are shown here.</p>
+                {% endif %}
+            </div>
+
+            <div class="nav">
+                <a class="nav-link nav-link-secondary" href="{% url 'home' %}">
+                    {% if lang == "lt" %}← Grįžti{% else %}← Back{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'chain_status' %}">
+                    {% if lang == "lt" %}Tikrinti grandinę{% else %}Verify chain{% endif %}
+                </a>
+
+                <a class="nav-link" href="{% url 'set_language' %}?lang=lt">LT</a>
+                <a class="nav-link" href="{% url 'set_language' %}?lang=en">EN</a>
+            </div>
+        </div>
+
+        <div class="block-list">
+            {% for block in blocks %}
+                <div class="block-card">
+                    <h2 class="block-title">
+                        {% if lang == "lt" %}Blokas{% else %}Block{% endif %} #{{ block.index }}
+                    </h2>
+
+                    <p class="block-meta">
+                        <b>{% if lang == "lt" %}Įvykis{% else %}Event{% endif %}:</b> {{ block.event_type }}
+                    </p>
+
+                    <p class="block-meta">
+                        <b>{% if lang == "lt" %}Data{% else %}Date{% endif %}:</b> {{ block.created_at|date:"Y-m-d H:i" }}
+                    </p>
+
+                    <p class="hash-label">Hash:</p>
+                    <div class="hash-box">{{ block.hash }}</div>
+
+                    <p class="hash-label">
+                        {% if lang == "lt" %}Ankstesnis hash:{% else %}Previous hash:{% endif %}
+                    </p>
+                    <div class="hash-box">{{ block.prev_hash }}</div>
+
+                    <p class="hash-label">
+                        {% if lang == "lt" %}Duomenys:{% else %}Data:{% endif %}
+                    </p>
+                    <pre class="data-box">{{ block.event_data }}</pre>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <p class="muted">
+                        {% if lang == "lt" %}Blokų nerasta.{% else %}No blocks found.{% endif %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
